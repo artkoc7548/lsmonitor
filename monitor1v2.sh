@@ -43,7 +43,7 @@ wyslane=$(echo $wyslane $wyslane2)
 
 info()
 
- {
+{
 
 	ramt=$(free -m |grep [0-9]|head -n 1|awk '{print $2}')
 	ramf=$(free -m |grep [0-9]|head -n 1 |awk '{print $4}')
@@ -64,6 +64,22 @@ info()
 	hddprocent=$(df -H | grep ^/dev/ |cut -f3 -d '/'| awk '{ print $5 }')
 
 }
+
+kartasieciowa()
+{
+ilekart=$(lspci |grep Ethernet | wc -l)
+
+
+
+for (( i=1; $i <= $ilekart; i++ )) ;
+	do
+	#lan=$(lspci |grep Ethernet |cut -d: -f3| tail -n $i|head -n 1)
+	lan$i=$(lspci |grep Ethernet |cut -d: -f3|tail -n +$i|head -n 1|awk '{print $1}')
+
+	done
+
+}
+
 
 uslugi()
 {
@@ -126,16 +142,20 @@ printf "%-1s %-15s %-1s %-15s %-1s %-20s %-1s %-15s %-1s %-20s %-1s %s\n" "|" "-
 read menu       
 	case $menu in
 		a)
-			polecenie1
-			polecenie2
+		clear
+		echo -e "\E[31m Podaj prawidłowy kod \033[0m"
+		read -p "naciśnij [Enter] aby kontynułować..." 
 			;;
 		m)
-			polecenie1
-			polecenie2
+		clear
+		echo -e "\E[31m Podaj prawidłowy kod \033[0m"
+		read -p "naciśnij [Enter] aby kontynułować..." 
 			;;
-s)
-			polecenie1
-			polecenie2
+		s)
+		clear
+		echo -e "\E[31m Podaj prawidłowy kod \033[0m"
+		read -p "naciśnij [Enter] aby kontynułować..." 
+			
 			;;
 		
 	
@@ -148,10 +168,18 @@ s)
 
 }
 
+
+
+# dmesg | grep -i dma
+# dmesg | grep -i memory
+# dmesg | grep -i usb
+# dmesg > boot_info
+
 while :
 do
 clear
 uslugi
+kartasieciowa
 statlan
 info
 clear
